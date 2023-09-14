@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "cloudstroage",
+  "private_key_id": "a27b0e9b1d13b25b4d82a73d0b020cd48828c328",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDDSiMR4dSMBQ52\nQPoBkinuqxIXY3QRvYg7b2pSvFFzUnqLeJr2TZiy/9akEPTLRTDpcWE4iaa5neVZ\nuWe4/VceCHuP2KOEkg5SrMSPD+yleE6QCbtyfd1fvaichjxU0oR5JhWHzCV7t7fn\nCjIrfSlZLQmmmWT598YUOEVuvFr7miwj6kiahvPz9+KCtA4Ws+5tAU2exaEmgywq\n9cTos3Yr8ELySIu+Sck6DX9Jo9N05kk+at/lqxOPbMUFcd+npUVj4KNzlHiuysQ6\nchSHMLl6hPhpGhQiRZo69LdaY8iaUYiM4V5Jksmaea5++oab6UdkAaQanACNqgD4\nrZAsR+GFAgMBAAECggEACbEhuW74QfS0SYki/zX2T8p8rN16MrEx1CVM5QtEjZEf\n1NEo+6VROTz6NY1D4Nyvtz4xwYEPXbHo4oGRlLw5+RsZqsNpJhirjk3VuXXkXDfy\nyjI5c86sUGaUuiPtVZZXDb4mnmUyzQeKoHRAlijxhuP10SdWvBMgaPt78ql1aHwh\nk5KGbXUj7Zpf6Vs2njoYprhAmrkF9U6wMw/iOKtfHBjlwYOuyZqSYOa2qbGmv/qk\nTEPtrSCQfe+H1woCAY8xcBI2hJW8HLM7YMQwaS3Js74cPSUqolIWC2yQ9x8uFnZo\noy9bjnEVgoFzvXtZZNLr4xSlXqpWKkxofSHxKR1ftwKBgQDouY8SZyoe20VwcEGu\nLAhQF46nVrx+kplqjan1fBEkvebHpxOXsdriU73PxfFNeMW98HGTHKCt0j36ZgjF\nE4ey2MTOjC1in/rboIPAWv/NfhjkzIqcn+Oy7X3olKKf3fCBFXw1u2WEClWgBkpH\nzrpQQzUEttKd1XY7qKjS3cj+GwKBgQDW0iAuImVDYzXZPa/3W11GCYBl5k8NsadJ\nSdu/AmjMppayUW3+TCix+F4fpGpaGDH+5UYBkyVEXdNPcChw6q3spN+7BlC3puO8\nrpYzUneckQn3uoQ6lvydtYwvkcGJQsY9nE9WTQjLSDRATJrEg5Dm1dOhr+vLbkn7\nvIYdDSAY3wKBgDWKAt0j+K+ymC3+1U1heeQbF0luDd08kqjNwGzmRvdh7Ma/rCU4\n2Hc69q7nBdVh1HQW7bn/WwPCG1oQwTG9hXlinxw5aXOIBGkka0sEZFb9DHMOj1Dr\nA7I1KsMn9qW6pEq+C54852TSD9LJv6r3Zytx2q+j85417oZZDcW9GjFDAoGAMKZh\nt1D+0eYT+eDoiwJb+1KHi4w+9wD2u7hIVde72C0aD8Q1PtQMm1F+L3hSxZiZKfrO\ngejLFdKR2nmyDvB29xLXwElL2munQ8HeLj1M7V5DfaD19Tbgeu70kolV5ToEH0vZ\nA9hqV29AthcjLcIF/OEMDqACrI2Ln8EwNkAUts0CgYAKuG0j2eEGFib/SV9aBiMg\nLQ/d3WW1aoctaLyS/eoTAvVMD5VpgCCeiMxHNrtff/CXzB7QL9ostbPoDo+4qdMo\nlpjxBRybSLF95kRDd+92zKkqVYinx7eKgmhUMzdWTdaBfXTgIg1ZYhVK/xEW8ftp\nBx3znhaT/dWlm+296ViI8w==\n-----END PRIVATE KEY-----\n",
+  "client_email": "wadswad@cloudstroage.iam.gserviceaccount.com",
+  "client_id": "116738036240090351924",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/wadswad%40cloudstroage.iam.gserviceaccount.com"
+}
