@@ -1,10 +1,6 @@
 var express = require("express");
 var app = express();
-var cookieParser = require("cookie-parser");
-const bp = require("body-parser");
-const PORT = process.env.PORT || 8080;
 
-const { applyPatch } = require("patch-package/dist/applyPatches");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -29,8 +25,6 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
-var cors = require("cors");
-const { ExitToApp } = require("@material-ui/icons");
 
 const authenticationRouter = require("./routes/authentication/authentication");
 app.use("/authentication", authenticationRouter);
