@@ -5,6 +5,9 @@ require("dotenv").config();
 var MongoClient = require("mongodb").MongoClient;
 const url = process.env.MONGODB_URL;
 
+const allergiesRouter = require("./profile/allergies");
+router.use("/allergy", allergiesRouter);
+
 const friendsRouter = require("./friends/user-friends");
 router.use("/friends", friendsRouter);
 
@@ -29,6 +32,7 @@ router.get("/:user_id", function (req, res, next) {
 
 //21.3 Add Friend to friend list
 router.post("/:user_id/:email", function (req, res, next) {
+  debugger;
   MongoClient.connect(url, async function (err, db) {
     if (err) throw err;
     var dbo = db.db("neufood");
