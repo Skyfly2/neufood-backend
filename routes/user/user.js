@@ -14,6 +14,9 @@ router.use("/friends", friendsRouter);
 const requestRouter = require("./request/user-request");
 router.use("/request", requestRouter);
 
+const allergyRouter = require("./taste/user-taste");
+router.use("/allergy", allergyRouter);
+
 //21.2 get user information
 router.get("/:user_id", function (req, res, next) {
   MongoClient.connect(url, function (err, db) {
