@@ -17,9 +17,9 @@ router.post("/:uid", async (req, res) => {
     await dbo
       .collection("user")
       .updateOne({ uid: uid }, { $push: { allergens: allergen } });
-    res.status(200).send();
+    return res.status(200).send();
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
 });
 
@@ -32,15 +32,14 @@ router.get("/:uid", async (req, res) => {
 
     const user = await dbo.collection("user").findOne({ uid: uid });
     if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
+      return res.status(404).json({ message: "User not found" });
     }
 
     const allergens = user.allergens || []; // Assuming 'allergens' is an array field in your user collection
 
-    res.status(200).json({ allergens: allergens });
+    return res.status(200).json({ allergens: allergens });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 });
 

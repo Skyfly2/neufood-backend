@@ -31,7 +31,7 @@ router.get("/:user_id", function (req, res, next) {
 });
 
 //21.3 Add Friend to friend list
-router.post("/:user_id/:email", function (req, res, next) {
+router.post("/:user_id/:email/:user_email", function (req, res, next) {
   debugger;
   MongoClient.connect(url, async function (err, db) {
     if (err) throw err;
@@ -95,7 +95,26 @@ router.post("/:user_id/:email", function (req, res, next) {
         )
         .then(function (result) {
           if (!result) throw new Error("No record found.");
-          res.send();
+          // Update the friend's list of the other user
+          dbo
+            .collection("user")
+            .updateOne(
+              { email: req.params.email },
+              { $push: { friends_list: req.params.user_id } }
+            )
+            .then(function (secondResult) {
+              if (!secondResult)
+                throw new Error("No record found for the friend.");
+              res.send();
+              db.close();
+            })
+            .catch(function (error) {
+              console.error(error);
+              db.close();
+            });
+        })
+        .catch(function (error) {
+          console.error(error);
           db.close();
         });
     }
