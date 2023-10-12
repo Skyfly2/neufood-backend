@@ -14,6 +14,9 @@ router.use("/friends", friendsRouter);
 const requestRouter = require("./request/user-request");
 router.use("/request", requestRouter);
 
+const allergyRouter = require("./taste/user-taste");
+router.use("/allergy", allergyRouter);
+
 //21.2 get user information
 router.get("/:user_id", function (req, res, next) {
   MongoClient.connect(url, function (err, db) {
@@ -32,7 +35,6 @@ router.get("/:user_id", function (req, res, next) {
 
 //21.3 Add Friend to friend list
 router.post("/:user_id/:email/:user_email", function (req, res, next) {
-  debugger;
   MongoClient.connect(url, async function (err, db) {
     if (err) throw err;
     var dbo = db.db("neufood");
