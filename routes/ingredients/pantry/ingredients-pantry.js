@@ -11,7 +11,10 @@ router.put("/:ingredients_id/:pantry_id", async function (req, res, next) {
   try {
     const dbo = await MongoClient.connect(url);
     const uid = new ObjectID(req.params.ingredients_id);
-    const pantry_id = new ObjectID(req.params.pantry_id);
+    const pantry_id =
+      req.params.pantry_id !== "null"
+        ? new ObjectID(req.params.pantry_id)
+        : undefined;
     const result = await dbo
       .db("neufood")
       .collection("ingredients")
