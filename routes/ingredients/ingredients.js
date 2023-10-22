@@ -128,6 +128,7 @@ router.post(
         image: imageUrl,
         quantity: req.params.quantity,
         user: req.params.user,
+        expiration_date: req.body.expiration_date,
         date: new Date(),
         sharing: false,
         request_list: [],
