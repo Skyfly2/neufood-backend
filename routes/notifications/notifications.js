@@ -3,7 +3,7 @@ const router = express.Router();
 const constants = require("../../constants/constants");
 require("dotenv").config();
 
-var MongoClient = require("mongodb").MongoClient;
+const { ObjectID, MongoClient } = require("mongodb");
 const url = process.env.MONGODB_URL;
 
 // Get notifications
@@ -27,13 +27,15 @@ router.get("/:email", async (req, res) => {
 // Read notifications
 router.put("/read", async (req, res) => {
   const client = await MongoClient.connect(url);
+  const uid = ObjectID(req.body.notificationId);
 
   try {
     const dbo = client.db("neufood");
-    await dbo
+    const result = await dbo
       .collection("notifications")
-      .updateOne({ _id: req.body.notificationID }, { $set: { isRead: true } });
-    return res.status(200).send();
+      .updateOne({ _id: uid }, { $set: { isRead: true } });
+    if (result.modifiedCount > 0) return res.status(200).send();
+    else return res.status(400).send("Notification not found");
   } catch (err) {
     return res.status(400).json({ error: constants.SERVER_ERROR });
   } finally {
