@@ -119,13 +119,10 @@ router.post(
         return;
       }
 
-      const imageUrl = await search(req.params.name);
-
       await dbo.collection("ingredients").insertOne({
         name: req.params.name,
         price: req.params.price,
         category: req.params.category,
-        image: imageUrl,
         quantity: req.params.quantity,
         user: req.params.user,
         expiration_date: req.body.expiration_date,
