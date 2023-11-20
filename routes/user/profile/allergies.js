@@ -43,4 +43,23 @@ router.get("/:uid", async (req, res) => {
   }
 });
 
+router.delete("/:uid", async (req, res) => {
+  const uid = req.params.uid;
+  const allergen = req.body.allergen;
+
+  const db = await MongoClient.connect(url);
+  const dbo = db.db("neufood");
+
+  try {
+    await dbo
+      .collection("user")
+      .updateOne({ uid: uid }, { $pull: { allergens: allergen } });
+    return res.status(200).send();
+  } catch (e) {
+    return res.status(400).send(e);
+  } finally {
+    await db.close();
+  }
+});
+
 module.exports = router;
