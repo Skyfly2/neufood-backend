@@ -236,4 +236,21 @@ router.delete("/:user_id/:friend_id", function (req, res, next) {
   });
 });
 
+router.post("/badge/:badge_name/:uid", async (req, res) => {
+  const client = await MongoClient.connect(url);
+  const dbo = client.db("neufood");
+
+  const userId = new ObjectID(req.params.uid);
+
+  try {
+    await dbo
+      .collection("user")
+      .updateOne({ uid: userId }, { $push: { badges: req.params.badge_name } });
+    return res.status(200).send();
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err);
+  }
+});
+
 module.exports = router;
