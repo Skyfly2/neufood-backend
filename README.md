@@ -6,7 +6,7 @@ Created February 2022 as a Technical Entrepreneurship project and developed as a
 
 ### Faculty Advisor
 
-Sean Vassilaros
+Tom Micklas
 
 ### Sponsors
 
@@ -15,10 +15,10 @@ Grant Kim
 
 ### Students
 
-Asher Hamrick\
-Anisha Gademsky\
-Clare Jachim\
-Isabella Hudson
+Rory Stein\
+Thor Long\
+Mike Hazaz\
+Kyrie Wu
 
 ## Neufood Backend Setup
 
