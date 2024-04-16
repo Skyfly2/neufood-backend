@@ -18,7 +18,7 @@ Grant Kim
 Rory Stein\
 Thor Long\
 Mike Hazaz\
-Kyrie Wu
+Kyrie Wu\
 
 ## Neufood Backend Setup
 
