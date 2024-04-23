@@ -13,7 +13,7 @@ const url = process.env.MONGODB_URL;
 const jwt = require("jsonwebtoken");
 
 var express = require("express");
-var app = express();
+var app = express(); 
 var recipes = require("./routes/recipes/recipes").recipes;
 
 app.use(express.json());
@@ -26,6 +26,9 @@ app.use(function (req, res, next) {
   next();
 });
 
+/**
+ * initialization of sub routes
+ */
 const authenticationRouter = require("./routes/authentication/authentication");
 app.use("/authentication", authenticationRouter);
 
@@ -127,7 +130,7 @@ function upsert(array, item) {
   if (i > -1) array[i] = item;
   else array.push(item);
 }
-const curr_email_ = [];
+const curr_email_ = []; //dead
 app.post("/api/google-login", async (req, res) => {
   const { token } = req.body;
   const users = {};
@@ -165,7 +168,7 @@ app.post("/api/google-login", async (req, res) => {
 
 // logout for google-api
 app.get("/logout", (req, res) => {
-  // remove session cookie
+  // remove session cookie need to implement
 });
 
 /*

@@ -9,6 +9,7 @@ const usersSchema = new mongoose.Schema({
 
     badges: [{ // array of badges the user will have displayed on their profile - ID will correspond to badge object
         badgeId: String,
+        dateAchieved: Date,
     },],
 
     allergies: [{ // array of allergies the user will have displayed on their profile - ID will correspond to allergy object

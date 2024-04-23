@@ -144,6 +144,7 @@ router.post(
   }
 );
 
+// looks not functiona, never used
 async function search(name) {
   const SerpApi = require("google-search-results-nodejs");
   const search = new SerpApi.GoogleSearch(
