@@ -6,7 +6,20 @@ const Counter = require('../models/Counter');
 // POST route to create a new pantry
 router.post('/', async (req, res) => {
     try {
-        const { name, ownerId } = req.body //extract name and description from request body
+        // keep in mind when sending info collaborators/ingredients structure is an array of JSON. can be null, in which collaborators = [];
+        /**
+        let collaborators = [
+            {"uid": "123123"},
+            {"uid": "514124"},
+            {"uid": "3452354"}
+        ];
+        let ingredients = [
+            {"name": "123123", "category": "Chinese", "quantity": 10, "unitPrice": 2.5, "totalPrice": 25, "purchaseDate": new Date("11/22/23"), "expDate": new Date("11/22/25")},
+            {"name": "6343", "category": "French", "quantity": 10, "unitPrice": 2.5, "totalPrice": 25, "purchaseDate": new Date("11/22/23"), "expDate": new Date("11/22/25")},
+            {"name": "9999", "category": null, "quantity": 10, "unitPrice": 2.5, "totalPrice": 25, "purchaseDate": new Date("11/22/23"), "expDate": new Date("11/22/25")}
+        ];
+        */
+        const { name, ownerId, collaborators, ingredients } = req.body; //extract name and description from request body
 
         //check if provided
         if (!name || !ownerId) {
@@ -20,6 +33,8 @@ router.post('/', async (req, res) => {
             pantryId: pantryId,
             name: name,
             ownerId: ownerId,
+            collaborators: collaborators,
+            ingredients: ingredients,
         });
 
         //save pantry to db
