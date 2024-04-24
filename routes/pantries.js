@@ -51,13 +51,15 @@ router.post('/', async (req, res) => {
 // GET route to retrieve a pantry by pantryId => 
 //      this would be used for all interaction for getting information from pantries.
 //      Ex: want to display all ingredients in a pantry? GET by pantryId and sort through ingredients array.
-//      "but thor how do we get the pantryIds???" they should be in a nice array in the user route
+//      "but thor how do we get the pantryIds???" they should be in a nice array in the user route :)
 router.get('/:pantryId', async (req, res) => {
     try {
         const { pantryId } = req.params;
         
         //find pantry by pantryId
-        const pantry = await Pantries.findOne({ pantryId });
+        const pantry = await Pantries.findOne(
+            { pantryId }
+        );
 
         //check if exists
         if (!pantry) {
@@ -71,13 +73,97 @@ router.get('/:pantryId', async (req, res) => {
         res.status(500).json({ error: 'Internal server error fetching from pantry' });
     }
 });
-// DELETE route to delete pantry by pantryId
 
-// PUT route to add ingredient(s) to a pantry
-// DELETE route to delete ingredient(s) from a pantry
+// DELETE route to delete pantry by pantryId
+router.delete('/:pantryId', async (req, res) => {
+    try {
+        const { pantryId } = req.params;
+        
+        //find pantry by pantryId
+        const deletedPantry = await Pantries.findOneAndDelete(
+            { pantryId }
+        );
+
+        //check if exists
+        if (!deletedPantry) {
+            return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        //send pantry as object as response
+        res.json({ message: 'Pantry deleted successfully.', deletedPantry});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error deleting pantry' });
+    }
+});
 
 // PUT route to add collaborator(s) to a pantry
 // DELETE route to delete collaborator(s) from a pantry
+
+// PUT route to add ingredient(s) to a pantry
+//      takes in same structure of schema, array of ingredient objects
+router.put('/:pantryId/addIngredients', async (req, res) => {
+    try {
+        const { pantryId } = req.params;
+        const { ingredients } = req.body;
+
+        //find pantry by pantryId
+        const pantry = await Pantries.findOne(
+            { pantryId }
+        );
+
+        // ensure pantry exists
+        //check if exists
+        if (!pantry) {
+            return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        //push to ingredients
+        pantry.ingredients.push(...ingredients);
+
+        //save updated
+        const updatedPantry = await pantry.save();
+
+        // send updated pantry as response
+        res.status(201).json(updatedPantry);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// DELETE route to delete ingredient(s) from a pantry
+//      takes in array of ingredient names (ex. ingredientNames = ["apple", "soy sauce"]; )
+router.delete('/:pantryId/deleteIngredients', async (req, res) => {
+    try {
+        const { pantryId } = req.params;
+        const { ingredientNames } = req.body;
+
+        //find pantry by pantryId
+        const pantry = await Pantries.updateOne(
+            { pantryId },
+            // use $pull to remove elements matching provided
+            { $pull: { ingredients: {name: { $in: ingredientNames }}}},
+            { new: true}
+        );
+
+        // ensure pantry exists
+        //check if exists
+        if (!pantry) {
+            return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        //save updated
+        const updatedPantry = await pantry.save();
+
+        // send updated pantry as response
+        res.status(201).json(updatedPantry);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 
 
@@ -111,3 +197,5 @@ async function generateUniquePantryId() {
 /**
  * Question: do we ever need to change the pantry, name, or ownerId of the pantry? no I don't think we let them change name of pantry
  */
+
+module.exports = router;
