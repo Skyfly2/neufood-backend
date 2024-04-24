@@ -119,16 +119,21 @@ curl -X PUT -H "Content-Type: application/json" -d '{
 }' http://localhost:8080/pantries/4/addCollaborators
 */
         const { pantryId } = req.params;
-        const { collaborators } = req.body;
+        const { collaborators } = req.body ? req.body : null;
 
         //find pantry by pantryId
         const pantry = await Pantries.findOne(
             { pantryId }
         );
 
-        //check if exists
+        //check if pantry exists
         if (!pantry) {
             return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        //check if exists
+        if (!collaborators) {
+            return res.status(404).json({ error: 'Collaborators not found.'});
         }
 
         //append (push) the new array to collaborators array in pantries.
@@ -154,7 +159,7 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
 }' http://localhost:8080/pantries/4/deleteCollaborators
 */
         const { pantryId } = req.params;
-        const { collaboratorNames } = req.body;
+        const { collaboratorNames } = req.body ? req.body : null;
 
         //find pantry by pantryId
         const pantry = await Pantries.updateOne(
@@ -167,6 +172,11 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
         //check if exists
         if (!pantry) {
             return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        //check if exists
+        if (!collaboratorNames) {
+            return res.status(404).json({ error: 'Collaborator names not found.'});
         }
 
         // send updated pantry update params as response
@@ -188,7 +198,7 @@ curl -X PUT -H "Content-Type: application/json" -d '{
 }' http://localhost:8080/pantries/4/addIngredients
 */
         const { pantryId } = req.params;
-        const { ingredients } = req.body;
+        const { ingredients } = req.body ? req.body : null;
 
         //find pantry by pantryId
         const pantry = await Pantries.findOne(
@@ -198,6 +208,11 @@ curl -X PUT -H "Content-Type: application/json" -d '{
         //check if exists
         if (!pantry) {
             return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        //check if exists
+        if (!ingredients) {
+            return res.status(404).json({ error: 'Ingredients not found.'});
         }
 
         //append (push) the new array to ingredients array in pantries.
@@ -224,7 +239,7 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
 }' http://localhost:8080/pantries/4/deleteIngredients
 */
         const { pantryId } = req.params;
-        const { ingredientNames } = req.body;
+        const { ingredientNames } = req.body ? req.body : null;
 
         //find pantry by pantryId
         const pantry = await Pantries.updateOne(
@@ -239,6 +254,11 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
             return res.status(404).json({ error: 'Pantry not found.'});
         }
 
+        //check if exists
+        if (!ingredientNames) {
+            return res.status(404).json({ error: 'Ingredients not found.'});
+        }
+
         // send updated pantry update params as response
         res.status(201).json(pantry);
     } catch (error) {
@@ -246,17 +266,6 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
-//default route structure and error catching
-router.post('/', async (req, res) => {
-    try {
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
 
 // Function to generate a unique badgeId (thanks Mike)
 async function generateUniquePantryId() {
