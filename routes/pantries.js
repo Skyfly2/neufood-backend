@@ -23,7 +23,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
         //check if provided name and ownerId, need those to continue
         if (!name || !ownerId) {
-            return res.status(400).json({error: 'Name of pantry and ownerId are required.'});
+            return res.status(400).json({error: 'For creating a new pantry, `name` of pantry and `ownerId` fields are required.'});
         }
 
         //generate unique pantryId
@@ -133,7 +133,7 @@ curl -X PUT -H "Content-Type: application/json" -d '{
 
         //check if exists
         if (!collaborators) {
-            return res.status(404).json({ error: 'Collaborators not found.'});
+            return res.status(404).json({ error: 'For adding collaborators to a pantry, `collaborators` (Array of collaborator objects) field is required.'});
         }
 
         //append (push) the new array to collaborators array in pantries.
@@ -176,7 +176,7 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
 
         //check if exists
         if (!collaboratorNames) {
-            return res.status(404).json({ error: 'Collaborator names not found.'});
+            return res.status(404).json({ error: 'For deleting collaborators from a pantry, `collaboratorNames` (Array of strings) field is required.'});
         }
 
         // send updated pantry update params as response
@@ -212,7 +212,7 @@ curl -X PUT -H "Content-Type: application/json" -d '{
 
         //check if exists
         if (!ingredients) {
-            return res.status(404).json({ error: 'Ingredients not found.'});
+            return res.status(404).json({ error: 'For adding ingredients to a pantry, `ingredients` (Array of ingredient objects) field is required.'});
         }
 
         //append (push) the new array to ingredients array in pantries.
@@ -256,7 +256,7 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
 
         //check if exists
         if (!ingredientNames) {
-            return res.status(404).json({ error: 'Ingredients not found.'});
+            return res.status(404).json({ error: 'For deleting ingredients from a pantry, `ingredientNames` (Array of strings) field is required.'});
         }
 
         // send updated pantry update params as response
