@@ -18,9 +18,10 @@ curl -X POST -H "Content-Type: application/json" -d '{
                   {"name": "9999", "category": null, "quantity": 10, "unitPrice": 2.5, "totalPrice": 25, "purchaseDate": "2023-11-22", "expDate": "2025-11-22"}]
 }' http://localhost:8080/pantries/
 */
-        const { name, ownerId, collaborators, ingredients } = req.body; //extract name and description from request body. Format above
+        //extract name and description from request body. Format above. Null if not specified in order to not crash, but name and ownerId are required in future
+        const { name, ownerId, collaborators, ingredients } = req.body ? req.body : null; 
 
-        //check if provided
+        //check if provided name and ownerId, need those to continue
         if (!name || !ownerId) {
             return res.status(400).json({error: 'Name of pantry and ownerId are required.'});
         }
@@ -33,8 +34,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
             pantryId: pantryId,
             name: name,
             ownerId: ownerId,
-            collaborators: collaborators,
-            ingredients: ingredients,
+            collaborators: collaborators ? collaborators : [], //if null, initialize to empty array
+            ingredients: ingredients ? ingredients : [],
         });
 
         //save pantry to db
@@ -108,7 +109,73 @@ curl -X DELETE -H "Content-Type: application/json" -d '' http://localhost:8080/p
 });
 
 // PUT route to add collaborator(s) to a pantry
+//      takes in same structure of schema, array of collaborator objects
+router.put('/:pantryId/addCollaborators', async (req, res) => {
+    try {
+/*
+curl -X PUT -H "Content-Type: application/json" -d '{
+    "collaborators": [{"uid": "1234123"},
+                  {"uid": "555555"}]
+}' http://localhost:8080/pantries/4/addCollaborators
+*/
+        const { pantryId } = req.params;
+        const { collaborators } = req.body;
+
+        //find pantry by pantryId
+        const pantry = await Pantries.findOne(
+            { pantryId }
+        );
+
+        //check if exists
+        if (!pantry) {
+            return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        //append (push) the new array to collaborators array in pantries.
+        pantry.collaborators.push(...collaborators);
+
+        //save updated
+        const updatedPantry = await pantry.save();
+
+        // send updated pantry as response
+        res.status(201).json(updatedPantry);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // DELETE route to delete collaborator(s) from a pantry
+router.delete('/:pantryId/deleteCollaborators', async (req, res) => {
+    try {
+/*
+curl -X DELETE -H "Content-Type: application/json" -d '{
+    "collaboratorNames": ["1234123", "555555"]
+}' http://localhost:8080/pantries/4/deleteCollaborators
+*/
+        const { pantryId } = req.params;
+        const { collaboratorNames } = req.body;
+
+        //find pantry by pantryId
+        const pantry = await Pantries.updateOne(
+            { pantryId },
+            // use $pull to remove elements matching any name in collaboratorNames array
+            { $pull: { collaborators: {uid: { $in: collaboratorNames }}}},
+            { new: true}
+        );
+
+        //check if exists
+        if (!pantry) {
+            return res.status(404).json({ error: 'Pantry not found.'});
+        }
+
+        // send updated pantry update params as response
+        res.status(201).json(pantry);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // PUT route to add ingredient(s) to a pantry
 //      takes in same structure of schema, array of ingredient objects
