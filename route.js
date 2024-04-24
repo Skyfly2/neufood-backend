@@ -8,8 +8,7 @@ const { google } = require("googleapis");
 const client = new google.auth.OAuth2();
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
-var MongoClient = require("mongodb").MongoClient;
-const url = process.env.MONGODB_URL;
+const url = process.env.MONGODB_URI;
 const jwt = require("jsonwebtoken");
 
 var express = require("express");
@@ -26,98 +25,8 @@ app.use(function (req, res, next) {
   next();
 });
 
-const authenticationRouter = require("./routes/authentication/authentication");
-app.use("/authentication", authenticationRouter);
 
-const dateRouter = require("./routes/date/date");
-app.use("/date", dateRouter);
 
-const ingredientsRouter = require("./routes/ingredients/ingredients");
-app.use("/ingredients", ingredientsRouter);
-
-const notificationsRouter = require("./routes/notifications/notifications");
-app.use("/notifications", notificationsRouter);
-
-const pantryRouter = require("./routes/pantry/pantry");
-app.use("/pantry", pantryRouter);
-
-const recipesRouter = require("./routes/recipes/recipes").router;
-app.use("/recipes", recipesRouter);
-
-const sharingRouter = require("./routes/sharing/sharing");
-app.use("/sharing", sharingRouter);
-
-const uploadRouter = require("./routes/upload/upload");
-app.use("/upload", uploadRouter);
-
-const userRouter = require("./routes/user/user");
-app.use("/user", userRouter);
-
-// https://stackoverflow.com/questions/19743396/cors-cannot-use-wildcard-in-access-control-allow-origin-when-credentials-flag-i
-//app.use(cors({ credentials: true, origin: "*" }));
-MongoClient.connect(url, function (err, db) {
-  if (err) throw err;
-  var dbo = db.db("neufood");
-  dbo
-    .collection("recipes")
-    .find({})
-    .toArray(function (err, result) {
-      if (err) throw err;
-      recipes.push(result);
-      db.close();
-    });
-});
-
-//20.2 get ingredients list the user has
-app.get("/:user_id/ingredients", function (req, res, next) {
-  MongoClient.connect(url, function (err, db) {
-    if (err) throw err;
-    var dbo = db.db("neufood");
-    //var uid = new require('mongodb').ObjectID(req.params.user_id);
-    dbo
-      .collection("ingredients")
-      .find({ user: req.params.user_id })
-      .toArray(function (err, result) {
-        if (err) throw err;
-        res.send(result);
-        db.close();
-      });
-  });
-});
-
-//26.5 get pantries the user joined
-// instead of user_id, its email
-app.get("/:user_id/pantry", function (req, res, next) {
-  MongoClient.connect(url, async function (err, db) {
-    if (err) throw err;
-    var dbo = db.db("neufood");
-    function getUserEmail() {
-      return new Promise(function (good) {
-        dbo
-          .collection("user")
-          .find({ uid: req.params.user_id })
-          .toArray(function (err, result) {
-            if (result.length === 0) {
-              // invalid user, return 400
-              res.status(400);
-              res.send(err);
-              good([]);
-            }
-            good(result[0].email);
-          });
-      });
-    }
-    var email = await getUserEmail();
-    dbo
-      .collection("pantry")
-      .find({ member_list: { $in: [email] } })
-      .toArray(function (err, result) {
-        if (err) throw err;
-        res.send(result);
-        db.close();
-      });
-  });
-});
 
 //google auth
 const users = []; //store user to mongo db or whatever.
