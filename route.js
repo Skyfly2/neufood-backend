@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const allergiesRoutes = require("./routes/allergies");
 const badgesRoutes = require("./routes/badges");
+const pantriesRoutes = require("./routes/pantries");
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use(function (req, res, next) {
 // Mount the routes
 app.use("/allergies", allergiesRoutes);
 app.use("/badges", badgesRoutes);
+app.use("/pantries", pantriesRoutes);
 
 module.exports = app;
 
