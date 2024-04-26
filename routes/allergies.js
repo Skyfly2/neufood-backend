@@ -18,9 +18,9 @@ router.post('/', async (req, res) => {
 
         // Create a new allergy object
         const allergy = new Allergies({
-        allergyId,
-        name,
-        description
+            allergyId,
+            name,
+            description
         });
 
         // Save the allergy object to the database

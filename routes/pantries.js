@@ -19,7 +19,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:8080/pantries/
 */
         //extract name and description from request body. Format above. Null if not specified in order to not crash, but name and ownerId are required in future
-        const { name, ownerId, collaborators, ingredients } = req.body ? req.body : null; 
+        // edit: no need to have collaborators or ingredients in the post route, pantries will be made before ingredients are added
+        const { name, ownerId } = req.body; 
 
         //check if provided name and ownerId, need those to continue
         if (!name || !ownerId) {
@@ -34,8 +35,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
             pantryId: pantryId,
             name: name,
             ownerId: ownerId,
-            collaborators: collaborators ? collaborators : [], //if null, initialize to empty array
-            ingredients: ingredients ? ingredients : [],
+            collaborators: [], //if null, initialize to empty array **** should always be null on creation / post
+            ingredients: [], // same here, should be null regardless on post
         });
 
         //save pantry to db
@@ -81,6 +82,66 @@ curl -X GET -H "Content-Type: application/json" -d '' http://localhost:8080/pant
     }
 });
 
+// PUT route to change the owner of a pantry given the pantry id
+router.put('/:pantryId/changeOwner', async (req, res) => {
+    try {
+
+        const { pantryId } = req.params;
+        const { newOwnerId } = req.body;
+
+        const pantry = await Pantries.findOne(
+            { pantryId }
+        );
+
+        // check if exists
+        if (!pantry) {
+            return res.status(404).json({ error: 'Pantry not found.' });
+        }
+
+        // set the pantry's owner id to the new owner id
+        pantry.ownerId = newOwnerId;
+
+        //save updated
+        const updatedPantry = await pantry.save();
+
+        // send updated pantry as response
+        res.status(201).json(updatedPantry);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error changing OwnerId' });
+    }
+});
+
+// PUT route to change the name of a pantry given the Id
+router.put('/:pantryId/changeName', async (req, res) => {
+    try {
+
+        const { pantryId } = req.params;
+        const { newName } = req.body;
+
+        const pantry = await Pantries.findOne(
+            { pantryId }
+        );
+
+        // check if exists
+        if (!pantry) {
+            return res.status(404).json({ error: 'Pantry not found.' });
+        }
+
+        // set the pantry's owner id to the new owner id
+        pantry.name = newName;
+
+        //save updated
+        const updatedPantry = await pantry.save();
+
+        // send updated pantry as response
+        res.status(201).json(updatedPantry);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error changing pantry name' });
+    }
+});
+
 // DELETE route to delete pantry by pantryId
 router.delete('/:pantryId', async (req, res) => {
     try {
@@ -119,7 +180,7 @@ curl -X PUT -H "Content-Type: application/json" -d '{
 }' http://localhost:8080/pantries/4/addCollaborators
 */
         const { pantryId } = req.params;
-        const { collaborators } = req.body ? req.body : null;
+        const { collaborators } = req.body; // dont know why this was originally `const { collaborators } = req.body ? req.body : null;`
 
         //find pantry by pantryId
         const pantry = await Pantries.findOne(
@@ -165,7 +226,7 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
         const pantry = await Pantries.updateOne(
             { pantryId },
             // use $pull to remove elements matching any name in collaboratorNames array
-            { $pull: { collaborators: {uid: { $in: collaboratorNames }}}},
+            { $pull: { collaborators: { uid: { $in: collaboratorNames }}}},
             { new: true}
         );
 
@@ -229,6 +290,87 @@ curl -X PUT -H "Content-Type: application/json" -d '{
     }
 });
 
+// PUT route to modify an ingredient within a pantry
+// takes in an ingredient object and matches the name to an existing name within the pantry to update the elements
+// WILL NOT CHANGE NAME, NEXT ROUTE IS FOR THAT
+router.put('/:pantryId/modifyIngredient', async (req, res) => {
+    try {
+
+        const { pantryId } = req.params;
+        const { ingredient } = req.body;
+
+        // Find the pantry by ID
+        const pantry = await Pantries.findById(pantryId);
+
+        if (!pantry) {
+            return res.status(404).json({ message: "Pantry not found" });
+        }
+
+        // Find the index of the ingredient to be modified
+        const index = pantry.ingredients.findIndex(item => item.name === ingredient.name);
+
+        if (index === -1) {
+            return res.status(404).json({ message: "Ingredient not found in the pantry" });
+        }
+
+        // Update the ingredient
+        pantry.ingredients[index] = {
+            name: ingredient.name,
+            category: ingredient.category,
+            quantity: ingredient.quantity,
+            unitPrice: ingredient.unitPrice,
+            totalPrice: ingredient.totalPrice,
+            purchaseDate: ingredient.purchaseDate,
+            expDate: ingredient.expDate
+        };
+
+        //save updated
+        const updatedPantry = await pantry.save();
+
+        // send updated pantry as response
+        res.status(201).json(updatedPantry);
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+
+});
+
+// PUT route to modify an ingredient's name within a pantry
+// takes in an object with 2 elements, previousName and newName
+router.put('/:pantryId/modifyIngredientName', async (req, res) => {
+    try {
+
+        const { pantryId } = req.params;
+        const { updatedIngredient } = req.body;
+
+        // Find the pantry by ID
+        const pantry = await Pantries.findById(pantryId);
+
+        if (!pantry) {
+            return res.status(404).json({ message: "Pantry not found" });
+        }
+
+        // Find the index of the ingredient to be modified
+        const index = pantry.updatedIngredient.findIndex(item => item.name === updatedIngredient.previousName);
+
+        if (index === -1) {
+            return res.status(404).json({ message: "Ingredient not found in the pantry" });
+        }
+
+        // Update the ingredient name
+        pantry.ingredients[index].name = updatedIngredient.newName;
+
+        // save updated
+        const updatedPantry = await pantry.save();
+
+        // send updated pantry as response
+        res.status(201).json(updatedPantry);
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+
+});
+
 // DELETE route to delete ingredient(s) from a pantry
 //      takes in array of ingredient names (ex. ingredientNames = ["9999", "Cashew"]; )
 router.delete('/:pantryId/deleteIngredients', async (req, res) => {
@@ -267,24 +409,20 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
     }
 });
 
-// Function to generate a unique badgeId (thanks Mike)
+// Function to generate a unique pantryId (thanks Mike) ((you're welcome))
 async function generateUniquePantryId() {
     try {
-        // Find and increment the counter for badges
+        // Find and increment the counter for pantries
         const counter = await Counter.findOneAndUpdate(
             { name: 'pantryIdCounter' },
             { $inc: { countVal: 1 } }, // Increment the counter value by 1
             { new: true, upsert: true } // Return the updated counter, create if not exists
         );
-        return counter.countVal.toString(); // Use the value as the unique ID for the badge object
+        return counter.countVal.toString(); // Use the value as the unique ID for the pantry object
     } catch (error) {
         console.error('Error generating a unique pantry ID:', error);
         throw error;
     }
 }
-
-/**
- * Question: do we ever need to change the pantry, name, or ownerId of the pantry? no I don't think we let them change name of pantry
- */
 
 module.exports = router;

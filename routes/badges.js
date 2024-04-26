@@ -18,9 +18,9 @@ router.post('/', async (req, res) => {
 
         // Create a new badge object
         const badge = new Badges({
-        badgeId,
-        name,
-        description
+            badgeId,
+            name,
+            description
         });
 
         // Save the badge object to the database
@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
     }
 }
 
-// PUT route to update an badge based on badgeId
+// PUT route to update a badge based on badgeId
 router.put('/:badgeId', async (req, res) => {
     try {
         const { badgeId } = req.params;
@@ -81,7 +81,7 @@ router.put('/:badgeId', async (req, res) => {
     }
 });
 
-// GET route to retrieve an badge based on badgeId
+// GET route to retrieve a badge based on badgeId
 router.get('/:badgeId', async (req, res) => {
     try {
         const { badgeId } = req.params;
@@ -102,7 +102,7 @@ router.get('/:badgeId', async (req, res) => {
     }
 });
 
-// DELETE route to delete an badge based on badgeId
+// DELETE route to delete a badge based on badgeId
 router.delete('/:badgeId', async (req, res) => {
     try {
         const { badgeId } = req.params;
