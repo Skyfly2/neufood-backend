@@ -89,9 +89,7 @@ router.put('/:pantryId/changeOwner', async (req, res) => {
         const { pantryId } = req.params;
         const { newOwnerId } = req.body;
 
-        const pantry = await Pantries.findOne(
-            { pantryId }
-        );
+        const pantry = await Pantries.findOne({ pantryId });
 
         // check if exists
         if (!pantry) {
@@ -119,19 +117,17 @@ router.put('/:pantryId/changeName', async (req, res) => {
         const { pantryId } = req.params;
         const { newName } = req.body;
 
-        const pantry = await Pantries.findOne(
-            { pantryId }
-        );
+        const pantry = await Pantries.findOne({ pantryId });
 
         // check if exists
         if (!pantry) {
             return res.status(404).json({ error: 'Pantry not found.' });
         }
 
-        // set the pantry's owner id to the new owner id
+        // set the pantry's name to the new name
         pantry.name = newName;
 
-        //save updated
+        // save updated pantry
         const updatedPantry = await pantry.save();
 
         // send updated pantry as response
@@ -141,6 +137,7 @@ router.put('/:pantryId/changeName', async (req, res) => {
         res.status(500).json({ error: 'Internal server error changing pantry name' });
     }
 });
+
 
 // DELETE route to delete pantry by pantryId
 router.delete('/:pantryId', async (req, res) => {
