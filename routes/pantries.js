@@ -11,11 +11,7 @@ router.post('/', async (req, res) => {
 /*keep in mind when sending info collaborators/ingredients structure is an array of JSON in proper structure. can be null
 curl -X POST -H "Content-Type: application/json" -d '{
                 "name": "ThorPantry",
-                "ownerId": "12345",
-                "collaborators": [{"uid": "123123"},{"uid": "514124"},{"uid": "3452354"}],
-                "ingredients": [{"name": "123123", "category": "Chinese", "quantity": 10, "unitPrice": 2.5, "totalPrice": 25, "purchaseDate": "2023-11-22", "expDate": "2025-11-22"},
-                  {"name": "6343", "category": "French", "quantity": 10, "unitPrice": 2.5, "totalPrice": 25, "purchaseDate": "2023-11-22", "expDate": "2025-11-22"},
-                  {"name": "9999", "category": null, "quantity": 10, "unitPrice": 2.5, "totalPrice": 25, "purchaseDate": "2023-11-22", "expDate": "2025-11-22"}]
+                "ownerId": "12345"
 }' http://localhost:8080/pantries/
 */
         //extract name and description from request body. Format above. Null if not specified in order to not crash, but name and ownerId are required in future
