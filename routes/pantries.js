@@ -290,31 +290,35 @@ router.put('/:pantryId/modifyIngredient', async (req, res) => {
     try {
 
         const { pantryId } = req.params;
-        const { ingredient } = req.body;
+        const { modifiedIngredient } = req.body;
 
         // Find the pantry by ID
-        const pantry = await Pantries.findById(pantryId);
+        const pantry = await Pantries.findOne({ pantryId });
 
         if (!pantry) {
             return res.status(404).json({ message: "Pantry not found" });
         }
 
         // Find the index of the ingredient to be modified
-        const index = pantry.ingredients.findIndex(item => item.name === ingredient.name);
+        const index = pantry.ingredients.findIndex(item => item.name === modifiedIngredient.name);
 
         if (index === -1) {
-            return res.status(404).json({ message: "Ingredient not found in the pantry" });
+            console.log(modifiedIngredient.name);
+            console.log("Modified Ingredient Name:", modifiedIngredient.name);
+            console.log("Pantry Ingredient Name:", pantry.ingredients.name);
+
+            return res.status(404).json({ message: "Ingredient not found in the pantry." });
         }
 
         // Update the ingredient
         pantry.ingredients[index] = {
-            name: ingredient.name,
-            category: ingredient.category,
-            quantity: ingredient.quantity,
-            unitPrice: ingredient.unitPrice,
-            totalPrice: ingredient.totalPrice,
-            purchaseDate: ingredient.purchaseDate,
-            expDate: ingredient.expDate
+            name: modifiedIngredient.name,
+            category: modifiedIngredient.category,
+            quantity: modifiedIngredient.quantity,
+            unitPrice: modifiedIngredient.unitPrice,
+            totalPrice: modifiedIngredient.totalPrice,
+            purchaseDate: modifiedIngredient.purchaseDate,
+            expDate: modifiedIngredient.expDate
         };
 
         //save updated
