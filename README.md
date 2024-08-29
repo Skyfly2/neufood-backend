@@ -15,9 +15,9 @@ Grant Kim
 
 ### Students
 
-Rory Stein
-Mike Hazaz
-Thor Long
+Rory Stein\
+Mike Hazaz\
+Thor Long\
 Kyrie Wu
 
 ## Neufood Backend Setup
