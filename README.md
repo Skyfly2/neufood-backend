@@ -55,7 +55,13 @@ $> npm install
 $> npm install -g nodemon
 ```
 
-7. You should now have all the necessary packages installed on your machine
+7. Install the mongoose module for for schema-like capabilities with the MongoDB backend structure
+
+```bash
+$> npm install mongoose
+```
+
+8. You should now have all the necessary packages installed on your machine
 
 #### Configuring Environment Variables
 
