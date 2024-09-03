@@ -38,7 +38,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
         //save pantry to db
         const savedPantry = await pantry.save();
 
-        // send saved pantry as response
+        // send saved pantry as response and 201 CREATED for POST
         res.status(201).json(savedPantry);
     } catch (error) {
         // oh no!
@@ -69,8 +69,8 @@ curl -X GET -H "Content-Type: application/json" -d '' http://localhost:8080/pant
             return res.status(404).json({ error: 'Pantry not found.'});
         }
 
-        //send pantry as JSON object as response
-        res.json(pantry);
+        //send pantry as JSON object as response and 200 OK for GET
+        res.status(200).json(pantry);
     } catch (error) {
         // oh no x9
         console.error(error);
@@ -98,8 +98,8 @@ router.put('/:pantryId/changeOwner', async (req, res) => {
         //save updated
         const updatedPantry = await pantry.save();
 
-        // send updated pantry as response
-        res.status(201).json(updatedPantry);
+        // send updated pantry as response and 202 ACCEPTED for PUT
+        res.status(202).json(updatedPantry);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error changing OwnerId' });
@@ -126,8 +126,8 @@ router.put('/:pantryId/changeName', async (req, res) => {
         // save updated pantry
         const updatedPantry = await pantry.save();
 
-        // send updated pantry as response
-        res.status(201).json(updatedPantry);
+        // send updated pantry as response and 202 ACCEPTED for PUT
+        res.status(202).json(updatedPantry);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error changing pantry name' });
@@ -153,8 +153,8 @@ curl -X DELETE -H "Content-Type: application/json" -d '' http://localhost:8080/p
             return res.status(404).json({ error: 'Pantry not found.'});
         }
 
-        //send deleted pantry as object as response
-        res.json({ message: 'Pantry deleted successfully.', deletedPantry});
+        //send deleted pantry as object as response and 202 ACCEPTED for DELETE
+        res.status(202).json({ message: 'Pantry deleted successfully.', deletedPantry});
     } catch (error) {
         // default error oh no wow what a surprise
         console.error(error);
@@ -196,8 +196,8 @@ curl -X PUT -H "Content-Type: application/json" -d '{
         //save updated
         const updatedPantry = await pantry.save();
 
-        // send updated pantry as response
-        res.status(201).json(updatedPantry);
+        // send updated pantry as response and 202 ACCEPTED for PUT
+        res.status(202).json(updatedPantry);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -233,8 +233,8 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
             return res.status(404).json({ error: 'For deleting collaborators from a pantry, `collaboratorNames` (Array of strings) field is required.'});
         }
 
-        // send updated pantry update params as response
-        res.status(201).json(pantry);
+        // send updated pantry update params as response and 202 ACCEPTED for DELETE
+        res.status(202).json(pantry);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -275,8 +275,8 @@ curl -X PUT -H "Content-Type: application/json" -d '{
         //save updated
         const updatedPantry = await pantry.save();
 
-        // send updated pantry as response
-        res.status(201).json(updatedPantry);
+        // send updated pantry as response and 202 ACCEPTED for PUT
+        res.status(202).json(updatedPantry);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -324,8 +324,8 @@ router.put('/:pantryId/modifyIngredient', async (req, res) => {
         //save updated
         const updatedPantry = await pantry.save();
 
-        // send updated pantry as response
-        res.status(201).json(updatedPantry);
+        // send updated pantry as response and 202 ACCEPTED for PUT
+        res.status(202).json(updatedPantry);
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
@@ -336,19 +336,20 @@ router.put('/:pantryId/modifyIngredient', async (req, res) => {
 // takes in an object with 2 elements, previousName and newName
 router.put('/:pantryId/modifyIngredientName', async (req, res) => {
     try {
-
         const { pantryId } = req.params;
         const { updatedIngredient } = req.body;
 
-        // Find the pantry by ID
-        const pantry = await Pantries.findById(pantryId);
+        // Find the pantry by pantryId, not _id
+        const pantry = await Pantries.findOne({ pantryId: pantryId });
 
         if (!pantry) {
             return res.status(404).json({ message: "Pantry not found" });
         }
 
         // Find the index of the ingredient to be modified
-        const index = pantry.updatedIngredient.findIndex(item => item.name === updatedIngredient.previousName);
+        const index = pantry.ingredients.findIndex(
+            item => item.name === updatedIngredient.previousName
+        );
 
         if (index === -1) {
             return res.status(404).json({ message: "Ingredient not found in the pantry" });
@@ -357,16 +358,16 @@ router.put('/:pantryId/modifyIngredientName', async (req, res) => {
         // Update the ingredient name
         pantry.ingredients[index].name = updatedIngredient.newName;
 
-        // save updated
+        // Save updated pantry
         const updatedPantry = await pantry.save();
 
-        // send updated pantry as response
-        res.status(201).json(updatedPantry);
+        // Send updated pantry as response and 202 ACCEPTED for PUT
+        res.status(202).json(updatedPantry);
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
-
 });
+
 
 // DELETE route to delete ingredient(s) from a pantry
 //      takes in array of ingredient names (ex. ingredientNames = ["9999", "Cashew"]; )
@@ -398,8 +399,8 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
             return res.status(404).json({ error: 'For deleting ingredients from a pantry, `ingredientNames` (Array of strings) field is required.'});
         }
 
-        // send updated pantry update params as response
-        res.status(201).json(pantry);
+        // send updated pantry update params as response and 202 ACCEPTED for DELETE
+        res.status(202).json(pantry);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
