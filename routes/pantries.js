@@ -207,34 +207,46 @@ curl -X PUT -H "Content-Type: application/json" -d '{
 // DELETE route to delete collaborator(s) from a pantry
 router.delete('/:pantryId/deleteCollaborators', async (req, res) => {
     try {
-/*
-curl -X DELETE -H "Content-Type: application/json" -d '{
-    "collaboratorNames": ["1234123", "555555"]
-}' http://localhost:8080/pantries/4/deleteCollaborators
-*/
+    /*
+    curl -X DELETE -H "Content-Type: application/json" -d '{
+        "collaboratorNames": ["1234123", "555555"]
+    }' http://localhost:8080/pantries/4/deleteCollaborators
+    */
         const { pantryId } = req.params;
         const { collaboratorNames } = req.body ? req.body : null;
 
-        //find pantry by pantryId
-        const pantry = await Pantries.updateOne(
-            { pantryId },
-            // use $pull to remove elements matching any name in collaboratorNames array
-            { $pull: { collaborators: { uid: { $in: collaboratorNames }}}},
-            { new: true}
+        // Check if collaboratorNames is provided and is an array
+        if (!collaboratorNames || !Array.isArray(collaboratorNames)) {
+            return res.status(400).json({ error: 'For deleting collaborators from a pantry, `collaboratorNames` (Array of strings) field is required.' });
+        }
+
+        // Find the pantry by pantryId
+        const pantry = await Pantries.findOne({ pantryId });
+
+        // Check if the pantry exists
+        if (!pantry) {
+            return res.status(404).json({ error: 'Pantry not found.' });
+        }
+
+        // Check if the collaborators exist in the pantry
+        const existingCollaborators = pantry.collaborators.filter(collaborator =>
+            collaboratorNames.includes(collaborator.uid)
         );
 
-        //check if exists
-        if (!pantry) {
-            return res.status(404).json({ error: 'Pantry not found.'});
+        // If not all collaborators are found, return an error
+        if (existingCollaborators.length !== collaboratorNames.length) {
+            return res.status(404).json({ error: 'One or more collaborators do not exist in the pantry.' });
         }
 
-        //check if exists
-        if (!collaboratorNames) {
-            return res.status(404).json({ error: 'For deleting collaborators from a pantry, `collaboratorNames` (Array of strings) field is required.'});
-        }
+        // Proceed to remove the collaborators
+        const updatedPantry = await Pantries.findOneAndUpdate(
+            { pantryId },
+            { $pull: { collaborators: { uid: { $in: collaboratorNames } } } },
+            { new: true } // Return the updated pantry
+        );
 
-        // send updated pantry update params as response and 202 ACCEPTED for DELETE
-        res.status(202).json(pantry);
+        // Send the updated pantry as the response
+        res.status(202).json(updatedPantry);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -382,7 +394,7 @@ curl -X DELETE -H "Content-Type: application/json" -d '{
         const { ingredientNames } = req.body ? req.body : null;
 
         //find pantry by pantryId
-        const pantry = await Pantries.updateOne(
+        const pantry = await Pantries.findOneAndUpdate(
             { pantryId },
             // use $pull to remove elements matching any name in ingredientNames array
             { $pull: { ingredients: {name: { $in: ingredientNames }}}},

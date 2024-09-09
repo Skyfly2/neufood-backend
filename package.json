@@ -12,6 +12,7 @@
     "googleapis": "^113.0.0",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.5.0",
+    "mongoose": "^8.6.1",
     "multer": "^1.4.5-lts.1",
     "password-validator": "^5.3.0",
     "uuid": "^8.3.2"
@@ -29,11 +30,14 @@
     "jest-transform-stub": "^2.0.0",
     "mongodb-memory-server": "^8.12.2",
     "react-inject-env": "^2.1.0",
-    "supertest": "^6.3.3",
+    "supertest": "^6.3.4",
     "text-encoding": "^0.7.0",
     "url-loader": "^4.1.1",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2"
+  },
+  "scripts": {
+    "test": "jest"
   },
   "eslintConfig": {
     "extends": [
