@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
         // Save the allergy object to the database
         const savedAllergy = await allergy.save();
 
-        // Send the saved allergy object as response
+        // Send the saved allergy object as response and 201 created post
         res.status(201).json(savedAllergy);
     } catch (error) {
         console.error(error);
