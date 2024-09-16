@@ -73,8 +73,8 @@ router.put('/:allergyId', async (req, res) => {
             return res.status(404).json({ error: 'Allergy not found.' });
         }
 
-        // Send the updated allergy object as response
-        res.json(allergy);
+        // Send the updated allergy object as response and 202 ACCEPTED for PUT
+        res.status(202).json(allergy);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -94,8 +94,8 @@ router.get('/:allergyId', async (req, res) => {
             return res.status(404).json({ error: 'Allergy not found.' });
         }
 
-        // Send the allergy object as response
-        res.json(allergy);
+        // Send the allergy object as response and 200 OK for GET
+        res.status(200).json(allergy);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -115,8 +115,8 @@ router.delete('/:allergyId', async (req, res) => {
             return res.status(404).json({ error: 'Allergy not found.' });
         }
 
-        // Send a success message as response
-        res.json({ message: 'Allergy deleted successfully.' });
+        // Send a success message as response and 202 ACCEPTED for DELETE
+        res.status(202).json({ message: 'Allergy deleted successfully.' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
